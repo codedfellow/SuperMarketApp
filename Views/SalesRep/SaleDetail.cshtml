@@ -1,0 +1,54 @@
+﻿@model IEnumerable<SupermarketApp.Models.SalesDetail>
+@inject SupermarketApp.Interfaces.IProductRepository productRepo
+@inject SupermarketApp.Interfaces.ISalesRepository salesRepo
+@{
+    ViewData["Title"] = "SaleDetail";
+}
+
+    <div>
+        <div class="card">
+            <div class="card-header">
+                <h1 class="text-center">Sale Details</h1>
+            </div>
+            <div class="card-body">
+                <table id="tblList" class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                Sales Date
+                            </th>
+                            <th>
+                                Product
+                            </th>
+                            <th>
+                                Unit Price
+                            </th>
+                            <th>
+                                Quantity
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            var sale = salesRepo.FindById(item.SalesId);
+                            <tr>
+                                <td>
+                                    @sale.SalesDate
+                                </td>
+                                <td>
+                                    @item.ProductName
+                                </td>
+                                <td>
+                                    @item.UnitPrice
+                                </td>
+                                <td>
+                                    @item.Quantity
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,44 @@
+﻿@model IEnumerable<SupermarketApp.Models.Product>
+
+@{
+    ViewData["Title"] = "LandingPage";
+}
+
+<h1 class="text-center">All Products</h1>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-sm-3">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">@item.ProductName</h3>
+                    @if (item.UnitsInStock == 0)
+                    {
+                        <br />
+                        <hr />
+                        <p class="text-danger">Out of stock</p>
+                    }
+                </div>
+                <div class="card-body">
+                    <img src="~/images/perfume.jpg" height="100" />
+                    <div>
+                        <p>
+                            <strong>Unit Price:</strong> <span class="text-green">NGN</span> @item.UnitPrice
+                        </p>
+                        <p>
+                            <strong>Units in stock:</strong> @item.UnitsInStock
+                        </p>
+                    </div>
+                </div>
+                @if (User.IsInRole("SalesRep"))
+                {
+                    <div class="card-footer">
+                        <a asp-controller="SalesRep" asp-action="AddToCart" asp-route-productId="@item.Id" class="btn btn-info">Add to cart</a>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+

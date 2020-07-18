@@ -1,0 +1,122 @@
+﻿@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SupermarketApp</title>
+    <link href="~/css/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/css/responsive.bootstrap4.css" rel="stylesheet" />
+    <link href="~/css/all.css" rel="stylesheet" />
+    <link href="~/css/tempusdominus-bootstrap-4.css" rel="stylesheet" />
+    <link href="~/css/icheck-bootstrap.css" rel="stylesheet" />
+    <link href="~/css/adminlte.css" rel="stylesheet" />
+    <link href="~/css/OverlayScrollbars.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body class="hold-transition layout-top-nav">
+    <div class="wrapper bg-white">
+        <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
+            <div class="container">
+                @*<a href="../../index3.html" class="navbar-brand">
+            <img src="../../dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+                 style="opacity: .8">
+            <span class="brand-text font-weight-light">AdminLTE 3</span>
+        </a>*@
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="LandingPage">
+                        <span class="brand-text font-weight-light">SupermarketApp</span>
+                    </a>
+                }
+
+                <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse order-3" id="navbarCollapse">
+                    <ul class="navbar-nav">
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="LandingPage">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="SalesRep" asp-action="Sales">Sales</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Welcome Page</a>
+                            </li>
+                        }
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("SalesRep"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="SalesRep" asp-action="Cart">Cart</a>
+                            </li>
+                        }
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Administrator"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Admin Setup</a>
+                                <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                                    <li><a asp-controller="Account" asp-action="CreateSalesAgent" class="dropdown-item">Create Sales Rep</a></li>
+                                    <li><a asp-controller="Product" asp-action="Index" class="dropdown-item">Manage Products</a></li>
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+
+                    <ul class="navbar-nav ml-auto">
+                        <partial name="_LoginPartial" />
+                    </ul>
+                </div>
+
+
+            </div>
+        </nav>
+
+        <div class="content-wrapper">
+            <div class="content">
+                <div class="container">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <main role="main" class="pb-3">
+
+            </main>
+        </div>
+        <footer class="main-footer">
+            <div class="float-right d-none d-sm-inline">
+                Anything you want
+            </div>
+            <strong> &copy; 2020 - AGHAULOR ELVIS SupermarketApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></strong> All rights reserved.
+        </footer>
+    </div>
+
+    <script src="~/js/jquery.js"></script>
+    <script src="~/js/jquery-ui.js"></script>
+    <script src="~/js/bootstrap.bundle.js"></script>
+    <script src="~/js/jquery.dataTables.js"></script>
+    <script src="~/js/dataTables.bootstrap4.js"></script>
+    <script src="~/js/dataTables.responsive.js"></script>
+    <script src="~/js/responsive.bootstrap4.js"></script>
+    <script src="~/js/sparkline.js"></script>
+    <script src="~/js/jquery.knob.min.js"></script>
+    <script src="~/js/moment.min.js"></script>
+    <script src="~/js/tempusdominus-bootstrap-4.js"></script>
+    <script src="~/js/jquery.overlayScrollbars.js"></script>
+    <script src="~/js/adminlte.js"></script>
+    <script src="~/js/dashboard.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

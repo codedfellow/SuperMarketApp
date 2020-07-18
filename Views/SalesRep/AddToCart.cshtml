@@ -1,0 +1,38 @@
+﻿@model CartVM
+@inject SupermarketApp.Interfaces.IProductRepository productRepo;
+
+@{
+    ViewData["Title"] = "AddToCart";
+    var product = productRepo.FindById(Model.ProductId);
+}
+
+    <div class="card">
+        <div class="card-header">
+            <h1>Add @product.ProductName Cart</h1>
+            <h4>Units in stock: @product.UnitsInStock</h4>
+            <hr />
+            <img src="~/images/perfume.jpg" height="150" />
+        </div>
+        <div class="card-body">
+            <div class="col-md-4 mx-auto">
+                <form asp-action="AddToCart">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <input type="hidden" asp-for="ProductId" class="form-control" />
+
+                    <div class="form-group">
+                        <label asp-for="Quantity" class="control-label"></label>
+                        <input asp-for="Quantity" class="form-control" />
+                        <span asp-validation-for="Quantity" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Add to cart" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

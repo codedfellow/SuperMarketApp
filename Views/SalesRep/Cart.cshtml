@@ -1,0 +1,50 @@
+﻿@model List<Cart>
+@inject SupermarketApp.Interfaces.IProductRepository productRepo
+
+@{
+    ViewData["Title"] = "Cart";
+    double total = 0;
+}
+
+@if (Model.Count > 0)
+{
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            var product = productRepo.FindById(item.ProductId);
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h1>@product.ProductName</h1>
+                    </div>
+                    <img src="~/images/perfume.jpg" height="150" />
+                    <div class="card-body">
+                        <p><strong>Unit Price: </strong>@product.UnitPrice</p>
+                        <p><strong>Total Price: </strong>@item.TotalPrice</p>
+                        <p><strong>Units bought: </strong>@item.Quantity</p>
+                        <a class="btn btn-danger" onclick="return confirm('Are you sure you want to remove product from cart')"
+                           asp-action="RemoveFromCart" asp-route-id="@item.Id">Remove from cart</a>
+                    </div>
+                </div>
+            </div>
+            total += item.TotalPrice;
+        }
+    </div>
+            <div class="card">
+                <div class="card-header">
+                    <p><strong>Total Cost = @total</strong></p>
+                    <a class="btn btn-primary" onclick="return confirm('Please confirm all the items before you make this sale!')"
+                       asp-action="MakeSale">Make Sale</a>
+                    <hr />
+                    <a class="btn btn-danger" onclick="return confirm('Are you sure you want to cancel this sale?')"
+                       asp-action="CancelSale">Cancel this sale</a>
+                </div>
+            </div>
+}
+else
+{
+    <div class="text-center">
+        <p>There are no products in cart</p>
+    </div>
+}
