@@ -46,7 +46,15 @@
                                     @Html.DisplayFor(modelItem => item.UnitsInStock)
                                 </td>
                                 <td>
-                                    <img src="~/images/perfume.jpg" height="30" />
+                                    @if (item.Picture != null)
+                                    {
+                                        var photoPath = "~/images/" + item.Picture;
+                                        <img src="@photoPath" height="30" asp-append-version="true" />
+                                    }
+                                    else
+                                    {
+                                        <img src="~/images/perfume.jpg" height="30" />
+                                    }
                                 </td>
                                 <td>
                                     <a class="btn btn-info" asp-action="Edit" asp-route-id="@item.Id">Edit</a>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -18,6 +19,10 @@ namespace SupermarketApp.ViewModels
         [Required]
         [Display(Name = "Units in Stock")]
         public int UnitsInStock { get; set; }
+        [Display(Name = "Delete old image")]
+        public bool DeleteOldPicture { get; set; }
         public string Picture { get; set; }
+        [Display(Name = "Product image")]
+        public IFormFile PictureContainer { get; set; }
     }
 }

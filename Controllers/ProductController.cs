@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SupermarketApp.Interfaces;
@@ -16,11 +18,13 @@ namespace SupermarketApp.Controllers
     public class ProductController : Controller
     {
         private readonly IProductRepository _productsRepository;
+        private readonly IWebHostEnvironment _hostEnvironment;
         private readonly IMapper _mapper;
-        public ProductController(IProductRepository productsRepository, IMapper mapper)
+        public ProductController(IProductRepository productsRepository, IMapper mapper, IWebHostEnvironment hostEnvironment)
         {
             _productsRepository = productsRepository;
             _mapper = mapper;
+            _hostEnvironment = hostEnvironment;
         }
         // GET: Categories
         public IActionResult Index()
@@ -45,6 +49,16 @@ namespace SupermarketApp.Controllers
                 if (ModelState.IsValid)
                 {
                     var newProduct = _mapper.Map<Product>(model);
+
+                    if (model.PictureContainer != null)
+                    {
+                        newProduct.Picture = ProcessUploadedFile(model);
+                    }
+                    else
+                    {
+                        newProduct.Picture = null;
+                    }
+
                     var created = _productsRepository.Create(newProduct);
                     if (created)
                     {
@@ -89,6 +103,33 @@ namespace SupermarketApp.Controllers
                         product.ProductName = model.ProductName;
                         product.UnitPrice = model.UnitPrice;
                         product.UnitsInStock = model.UnitsInStock;
+
+                        if (model.PictureContainer != null)
+                        {
+                            if (model.Picture != null)
+                            {
+                                string filePath = Path.Combine(_hostEnvironment.WebRootPath, "images", model.Picture);
+                                System.IO.File.Delete(filePath);
+                            }
+                            product.Picture = ProcessUploadedFile(model);
+                        }
+                        else
+                        {
+                            if (model.DeleteOldPicture)
+                            {
+                                if (model.Picture != null)
+                                {
+                                    string filePath = Path.Combine(_hostEnvironment.WebRootPath, "images", model.Picture);
+                                    System.IO.File.Delete(filePath);
+                                    product.Picture = null;
+                                }
+                                else
+                                {
+                                    product.Picture = null;
+                                }
+                            }
+                        }
+
                         var updated = _productsRepository.Update(product);
                         if (updated)
                         {
@@ -108,6 +149,26 @@ namespace SupermarketApp.Controllers
                 ModelState.AddModelError("", e.Message);
                 return View();
             }
+        }
+
+
+        private string ProcessUploadedFile(ProductVM model)
+        {
+            string uniqueFileName = null;
+            if (model.PictureContainer != null)
+            {
+                string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath + "/images");
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + model.PictureContainer.FileName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using var fileStream = new FileStream(filePath, FileMode.Create);
+                model.PictureContainer.CopyTo(fileStream);
+            }
+            else
+            {
+                return uniqueFileName;
+            }
+
+            return uniqueFileName;
         }
 
         //// POST: Categories/Delete/5

@@ -11,7 +11,7 @@
             </div>
             <div class="card-body">
                 <div>
-                    <form asp-action="Create">
+                    <form asp-action="Create" enctype="multipart/form-data">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="form-group">
                             <label asp-for="ProductName" class="control-label"></label>
@@ -29,6 +29,15 @@
                             <span asp-validation-for="UnitsInStock" class="text-danger"></span>
                         </div>
                         <div class="form-group">
+                            <label asp-for="PictureContainer" class="control-label"></label>
+                            <div class="col-sm-12">
+                                <div class="custom-file">
+                                    <input asp-for="PictureContainer" class="form-control custom-file-input" />
+                                    <label class="custom-file-label">Click here to change image</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <input type="submit" value="Add" class="btn btn-primary" />
                         </div>
                     </form>
@@ -42,5 +51,13 @@
     </div>
 
 @section Scripts {
+    <script>
+                $(document).ready(function () {
+                    $('.custom-file-input').on("change", function () {
+                        var fileName = $(this).val().split("\\").pop();
+                        $(this).next('.custom-file-label').html(fileName);
+                    });
+                })
+    </script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
